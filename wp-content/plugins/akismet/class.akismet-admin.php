@@ -434,7 +434,7 @@ class Akismet_Admin {
 		
 		if ( ! wp_verify_nonce( $_POST['nonce'], 'akismet_check_for_spam' ) ) {
 			wp_send_json( array(
-				'error' => __( "You don't have permission to do that."),
+				'error' => __( 'You don&#8217;t have permission to do that.', 'akismet' ),
 			));
 			return;
 		}
@@ -897,6 +897,7 @@ class Akismet_Admin {
 			'usage_limit'  => get_option( 'akismet_alert_usage_limit' ),
 			'upgrade_plan' => get_option( 'akismet_alert_upgrade_plan' ),
 			'upgrade_url'  => get_option( 'akismet_alert_upgrade_url' ),
+			'upgrade_type' => get_option( 'akismet_alert_upgrade_type' ),
 		);
 	}
 
@@ -1038,7 +1039,7 @@ class Akismet_Admin {
 		}
 
 		$alert_code = get_option( 'akismet_alert_code' );
-		if ( isset( Akismet::$LIMIT_NOTICES[ $alert_code ] ) ) {
+		if ( isset( Akismet::$limit_notices[ $alert_code ] ) ) {
 			$notices[] = self::get_usage_limit_alert_data();
 		}
 
@@ -1078,12 +1079,11 @@ class Akismet_Admin {
 
 		if ( in_array( $hook_suffix, array( 'edit-comments.php' ) ) && (int) get_option( 'akismet_alert_code' ) > 0 ) {
 			Akismet::verify_key( Akismet::get_api_key() ); //verify that the key is still in alert state
-		
+
 			$alert_code = get_option( 'akismet_alert_code' );
-			if ( isset( Akismet::$LIMIT_NOTICES[ $alert_code ] ) ) {
+			if ( isset( Akismet::$limit_notices[ $alert_code ] ) ) {
 				self::display_usage_limit_alert();
-			}
-			elseif ( $alert_code > 0 ) {
+			} elseif ( $alert_code > 0 ) {
 				self::display_alert();
 			}
 		}
@@ -1158,7 +1158,7 @@ class Akismet_Admin {
 		if ( !class_exists('Jetpack') )
 			return false;
 
-		if ( defined( 'JETPACK__VERSION' ) && version_compare( JETPACK__VERSION, '7.7', '<' )  ) {
+		if ( defined( 'JETPACK__VERSION' ) && version_compare( JETPACK__VERSION, '7.7', '<' ) ) {
 			// For version of Jetpack prior to 7.7.
 			Jetpack::load_xml_rpc_client();
 		}
